@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>资产统计</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #91eaff;
+            height: 10%;
+        }
+
+        .title span {
+            font-size: 2.6rem;
+            color: #00e89b;
+        }
+    </style>
+    <script src="../js/echarts.js"></script>
+</head>
+
+<body>
+    <div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">资产统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+</body>
+<script>
+    var json = {
+        data: {
+            '已巡检':{
+                '每月巡检':20,
+                '月度巡检':70,
+                '季度巡检':49
+            },
+            '未巡检':{
+                '每月巡检':55,
+                '月度巡检':22,
+                '季度巡检':56
+            },
+
+        }
+    }
+    var option = {
+        grid: {
+            top: '5%',
+            right: '2%',
+            bottom: '0%',
+            left: '0%',
+            containLabel: true
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                type: 'line'
+            },
+//            formatter: function (params) {
+//                return params[0].name + '<br/>' +
+//                        params[0].seriesName + ' : ' + params[0].value + '<br/>' +
+//                        params[1].seriesName + ' : ' + (params[1].value + params[0].value);
+//            }
+        },
+        legend: {
+            selectedMode: false,
+            data: ['Acutal', 'Forecast'],
+            textStyle: {
+                color:'#fff'
+            }
+
+        },
+        calculable: true,
+        xAxis: [{
+            type: 'category',
+            data: ['服务器', '网络设备', '存储设备', '机柜', '其它设备'],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize:20
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+
+        }],
+        yAxis: [{
+            type: 'value',
+            boundaryGap: [0, 0.1],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize:20
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+
+        }],
+        series: [{
+            name: 'Acutal',
+            type: 'bar',
+            stack: 'sum',
+            barCategoryGap: '50%',
+            itemStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: 'rgba(5,119,255,0.8)'},
+                                {offset: 0.5, color: 'rgba(5,119,255,0.5)'},
+                                {offset: 0.9, color: 'rgba(5,119,255,0.2)'}
+                            ]
+                    ),
+                    label: {
+                        show: true,
+                        position: 'insideTop'
+                    }
+                }
+            },
+            data: [260, 200, 220, 120, 100]
+        },
+            {
+                name: 'Forecast',
+                type: 'bar',
+                stack: 'sum',
+                itemStyle: {
+                    normal: {
+                        color: '#99efbf',
+                        label: {
+                            show: true,
+                            position: 'insideTop',
+                            formatter: function (params) {
+//                                for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+//                                    if (option.xAxis[0].data[i] == params.name) {
+//                                        return option.series[0].data[i] + params.value;
+//                                    }
+//                                }
+                            },
+                            textStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                },
+                data: [40, 80, 50, 80, 80]
+            }
+        ]
+    };
+    var myChart = echarts.init(document.getElementById('charts'));
+    myChart.setOption(option);
+    function initEchart(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        var xAxisData = [];
+        var legend = [];
+        var datas = [];
+        var data0 = [];
+        for(var item in json) {
+            legend.push(item);
+            datas.push(json[item]);
+        }
+        for(var i=0;i<datas.length;i++) {
+            xAxisData = [];
+            data0 = []
+            for(var j in datas[i]) {
+                xAxisData.push(j);
+                data0.push(datas[i][j])
+            }
+            option.series[i].data = data0;
+            option.series[i].name = legend[i];
+        }
+        option.xAxis[0].data = xAxisData;
+        option.legend.data = legend
+        myChart.setOption(option)
+
+    }
+    initEchart(json);
+</script>
+
+</html>

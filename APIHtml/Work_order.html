@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工单统计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #91eaff;
+            height: 10%;
+        }
+
+        .title span {
+            font-size: 2.6rem;
+            color: #00e89b;
+        }
+    </style>
+    <script src="js/echarts.js"></script>
+</head>
+
+<body>
+    <div class="title">
+        工单统计/<span>单</span>
+    </div>
+    <div id="main" style="width:100%;height:90%;"></div>
+</body>
+<script>
+    function initEchart() {
+        var option = {
+            grid: {
+                top: '5%',
+                right: '2%',
+                bottom: '7%',
+                left: '7%'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                    type: 'line'
+                }
+            },
+            calculable: true,
+            xAxis: [{
+                type: 'category',
+                data: ['事件单', '问题单', '变更单', '服务单'],
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize:20
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                }
+
+            }],
+            yAxis: [{
+                type: 'value',
+                boundaryGap: [0, 0.1],
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize:20
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                }
+
+            }],
+            series: [{
+                name: '',
+                type: 'bar',
+                stack: 'sum',
+                barCategoryGap: '70%',
+
+                data: [1700, 2200, 2400, 2800],
+                itemStyle: {
+                    normal: {
+                        color: function (value) {
+                            var colorList = [
+                                '#c39c8b', '#d8d19d', '#76a4d5', '#b8dfd9'
+                            ];
+                            return colorList[value.dataIndex];
+                        }
+                    }
+                }
+            }]
+        };
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption(option);
+    }
+    initEchart();
+</script>
+
+</html>

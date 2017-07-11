@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CPU报表</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #91eaff;
+            height: 10%;
+        }
+
+        .title span {
+            font-size: 2.6rem;
+            color: #00e89b;
+        }
+    </style>
+    <script src="../js/echarts.js"></script>
+</head>
+
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">网络资源负载统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+</body>
+<script>
+    var json = {
+        data: {
+            'JAN':12000,
+            'FEB':14000,
+            'MAR':15000,
+            'APR':14000,
+            'MAY':12000,
+            'JUN':14000,
+            'JUL':15000,
+            'AUG':12000
+        }
+    }
+    var myChart = echarts.init(document.getElementById('charts'));
+    var option = {
+        grid: {
+            top: '5%',
+            right: '5%',
+            bottom: '2%',
+            left: '1%',
+            containLabel: true
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                type: 'line'
+            }
+        },
+        calculable: true,
+        xAxis: [{
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize:16
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: "rgba(31,38,46,0.8)",
+                    type: "dashed"
+                }
+            }
+
+        }],
+        yAxis: [{
+            type: 'value',
+            boundaryGap: [0, 0.1],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize:16
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            },
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: "rgba(31,38,46,0.8)",
+                    type: "dashed"
+                }
+            }
+
+        }],
+        series: [{
+            name: '当前分配量',
+            type: 'line',
+            smooth: true,
+            itemStyle: {
+                normal: {
+                    areaStyle: {
+                        type: 'default',
+                        color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: 'rgba(5,119,255,0.8)'},
+                                    {offset: 0.5, color: 'rgba(5,119,255,0.5)'},
+                                    {offset: 0.9, color: 'rgba(5,119,255,0.2)'}
+                                ]
+                        )
+                    },
+                    color: '#63DBEC'
+                }
+            },
+            data:[]
+        }]
+    };
+    myChart.setOption(option);
+    function initEchart(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        //定义存储变量  月份的存储变量
+        var xAxisMon = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        var MonValue = [];
+        //数据解析
+        for(var i = 0;i < xAxisMon.length; i++) {
+            for(var Mon in json) {
+                if(xAxisMon[i] == Mon) {
+                    MonValue.push(json[Mon])
+                }
+            }
+        }
+        option.xAxis[0].data = xAxisMon;
+        option.series[0].data = (function () {
+            //重新定义数据
+            var newDatas = [];
+            for(var i = 0;i < 12;i++) {
+                var newData = MonValue[i]
+                if(newData) {
+                    newDatas.push((parseFloat(newData)/10000).toFixed(2));
+                } else {
+                    newDatas.push('')
+                }
+            }
+            return newDatas;
+
+        })();
+        myChart.setOption(option)
+    }
+    initEchart(json);
+
+</script>
+
+</html>

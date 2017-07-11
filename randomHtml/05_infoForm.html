@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>机柜使用率</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        .projectBox ul {
+            display: inline-block;
+            position: absolute;
+            bottom: 10%;
+            right: 1%;
+        }
+        .projectBox li {
+            list-style: none;
+        }
+        .projectBox li i {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-right: 10px;
+        }
+        .projectBox li span {
+            color: #fff;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">机柜使用率</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+
+
+<script>
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+    var dataAxis = ['M1','M2','M3','M4'];
+    var data = [12, 71, 30, 93];
+    var xMax = 100;
+    var dataShadow = [];
+
+    for (var i = 0; i < data.length; i++) {
+        dataShadow.push(xMax);
+    }
+
+    option = {
+//        grid:{
+//            left:'1%',
+//            right:'20%',
+//            bottom:'10%',
+//            containLabel:true
+//        },
+        xAxis: {
+            data: dataAxis,
+            axisLabel: {
+                textStyle: {
+                    color: '#fff',
+                    fontSize:'20'
+                }
+            },
+            axisTick: {
+                show: false
+            },
+            axisLine: {
+                show: false
+            },
+            z: 10
+        },
+        yAxis: {
+            axisLine: {
+                show: false
+            },
+            axisTick: {
+                show: false
+            },
+            splitLine:{
+                show:false
+            },
+            axisLabel: {
+                show:false
+            }
+        },
+        series: [
+            {
+                type: 'bar',
+                itemStyle: {
+                    normal: {color: 'rgba(0,109,248,0.5)'}
+                },
+                barGap:'-100%',
+                barCategoryGap:'50%',
+                data: dataShadow,
+                animation: false
+            },
+            {
+                type: 'bar',
+                itemStyle: {
+                    normal: {
+                        color: function(params) {
+                            var colorList = [
+                                '#00FFC5','#0067F0','#F7AB4B','#E85E6D'
+                            ];
+                            if(params.value <=30) {
+                                return colorList[0];
+                            } else if(params.value >30 && params.value <=60) {
+                                return colorList[1]
+                            } else if(params.value >60 && params.value <=80) {
+                                return colorList[2]
+                            } else{
+                                return colorList[3]
+                            }
+                        },
+                        label: {
+                            show: true,
+                            position: 'top',
+                            formatter: '{c}%',
+                            textStyle:{
+                                color:'#fff',
+                                fontSize:'25'
+                            }
+                        }
+                    }
+                },
+                data: data
+            }
+        ]
+    };
+
+    myChart.setOption(option);
+
+    setInterval(function () {
+
+        option.series[1].data[0] = RandomNumBoth(10,12)
+        option.series[1].data[1] = RandomNumBoth(70,73)
+        option.series[1].data[2] = RandomNumBoth(30,32)
+        option.series[1].data[3] = RandomNumBoth(90,95)
+
+        myChart.setOption(option, true);
+
+    },2000);
+
+    //提取随机数
+    function RandomNumBoth(Min,Max){
+        var Range = Max - Min;
+        var Rand = Math.random();
+        var num = Min + Math.round(Rand * Range); //四舍五入
+        return num;
+    }
+</script>
+</body>
+</html>

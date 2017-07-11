@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CPU性能负载排行</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #91eaff;
+            height: 10%;
+        }
+
+        .title span {
+            font-size: 2.6rem;
+            color: #00e89b;
+        }
+    </style>
+    <script src="../js/echarts.js"></script>
+</head>
+
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">CPU性能负载排行</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+</body>
+<script>
+    var json = {
+        data: {
+            '新城所':400,
+            '龙岗所':500,
+            '同乐所':600,
+            '盛平所':700,
+            '龙新所':830,
+            '坪地所':944,
+            '新生所':1040,
+            '爱联锁':1034,
+            '大运所':1489,
+            '横岗所':1823
+        }
+    }
+
+    var myChart = echarts.init(document.getElementById('charts'));
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'line'
+            }
+        },
+        grid: {
+            top: '5%',
+            right: '5%',
+            bottom: '0%',
+            left: '0%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff',
+                    fontSize:20
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff',
+                    fontSize:20
+                }
+            }
+
+        },
+        yAxis: {
+            type: 'category',
+            data:[],
+//            data: ['新城所', '龙岗所', '同乐所', '盛平所', '龙新所', '坪地所', '新生所', '爱联锁', '大运所', '横岗所'],
+            axisLabel: {
+                interval: 0,
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff'
+                }
+            }
+
+        },
+        series: [{
+            name: '',
+            type: 'bar',
+            barCategoryGap: '50%',
+            data:[],
+//            data: [400, 500, 600, 700, 830, 944, 1040, 1034, 1489, 1823],
+            itemStyle: {
+                normal: {
+                    color: function (value) {
+                        var colorList = [
+                            '#4274ab', '#4274ab', '#4274ab', '#4274ab', '#4274ab',
+                            '#4274ab', '#4274ab', '#7ee4be', '#cabe5e', '#be8a72'
+                        ];
+                        return colorList[value.dataIndex];
+                    }
+                }
+            }
+        }]
+    };
+    myChart.setOption(option);
+    function initEchart(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        var xAxisData = [];
+        option.series[0].data = Object.keys(json).map(function (key) {
+            return {
+                name: key,
+                value: json[key],
+            }
+        });
+        for(var i=0;i<option.series[0].data.length;i++) {
+            xAxisData.push(option.series[0].data[i].name)
+        }
+        option.yAxis.data = xAxisData;
+        myChart.setOption(option)
+        
+    }
+    initEchart(json);
+</script>
+
+</html>

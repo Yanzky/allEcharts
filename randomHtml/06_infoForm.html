@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史交易成功率</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">交易成功率</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+
+
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+
+    var types = ['交易成功率','跨行交易成功率'];
+    var years = ['01-06','01-07','01-08','01-09','01-10'];
+    var datas = [[98.99,98.99,98.77,99.55,98.22],[98.55,99.33,99.11,99.23,99.33]];
+
+    var grid = {
+        left:'left',
+        right:'8%',
+        bottom:'2%',
+        containLabel:true
+    };
+
+    var axisLine = {
+        lineStyle:{
+            color:'#5D5D5D',
+            width:'2'
+        }
+    }
+    var axisTick = {
+        show:false
+    }
+
+    var axisLabel = {
+        interval:0,
+        textStyle:{
+            color:'#fff',
+            fontSize:"16"
+        }
+    }
+    var splitLine = {
+        show:true,
+        lineStyle:{
+            color:'#8A8A8A',
+            type:'dashed'
+        }
+    }
+    var lineStyle = {
+        normal:{
+            width:'3'
+        }
+    }
+
+    var option = {
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            left:'left',
+            top:'2%',
+            textStyle:{
+                color:'#fff'
+            },
+            data:(function() {
+                var icategory = [];
+                for(var i=0; i<types.length; i++) {
+                    icategory.push(types[i]);
+                }
+                return icategory;
+            })()
+        },
+        grid:grid,
+        xAxis : [
+            {
+                type : 'category',
+//                boundaryGap : false,
+                /*样式*/
+                axisLine:axisLine,
+                axisTick:axisTick,
+                axisLabel:axisLabel,
+                splitLine:splitLine,
+
+                data : (function() {
+                    var icategory = [];
+                    for(var i=0; i<years.length; i++) {
+                        icategory.push(years[i]);
+                    }
+                    return icategory;
+                })()
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                max:100,
+//                min:'dataMin',
+                min:98.1,
+                /*样式*/
+                axisLine:axisLine,
+                axisTick:axisTick,
+                axisLabel:{
+                    interval:0,
+                    formatter:'{value}%',
+                    textStyle:{
+                        color:'#fff',
+                        fontSize:"16"
+                    }
+                },
+                splitLine:splitLine,
+            }
+        ],
+        series:[
+            {
+                name:types[0],
+                type:'line',
+                symbol: "circle",
+                symbolSize:"12",
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        textStyle:{
+                            color:'#fff',
+                            fontSize:'14'
+                        }
+                    }
+                },
+                itemStyle: {normal:{
+                    color:"#0092FF",
+                }},
+                lineStyle:lineStyle,
+                data:datas[0]
+            },
+            {
+                name:types[1],
+                type:'line',
+                symbol: "circle",
+                symbolSize:"12",
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'right',
+                        textStyle:{
+                            color:'#fff',
+                            fontSize:'14'
+                        }
+                    }
+                },
+                itemStyle: {normal:{
+                    color:"#F7AC46",
+                }},
+                lineStyle:lineStyle,
+                data:datas[1]
+            }
+        ]
+    };
+
+    //设置日期，当前日期的前七天
+    var myDate = new Date(); //获取今天日期
+    myDate.setDate(myDate.getDate() - 7);
+    var dateArray = [];
+    var dateTemp;
+    var flag = 1;
+    for (var i = 0; i < 7; i++) {
+        dateTemp = (myDate.getMonth()+1)+"-"+myDate.getDate();
+        dateArray.push(dateTemp);
+        myDate.setDate(myDate.getDate() + flag);
+    }
+
+    option.xAxis[0].data = dateArray;
+    myChart.setOption(option);// 重新加载图表
+
+    setInterval(function () {
+        var arr = [];
+        var arr1 = [];
+        for(var i=0;i<dateArray.length;i++) {
+            arr.push(RandomNumBoth(98.5,100));
+            arr1.push(RandomNumBoth(99,100));
+        }
+        option.series[0].data = arr;
+        option.series[1].data = arr1;
+        myChart.setOption(option);// 重新加载图表
+
+    },2000);
+
+    //提取随机数
+    function RandomNumBoth(Min,Max){
+        var Range = Max - Min;
+        var Rand = Math.random().toFixed(2)-0;
+        var num = Min + Rand * Range; //四舍五入
+        return num;
+    }
+
+</script>
+</body>
+</html>

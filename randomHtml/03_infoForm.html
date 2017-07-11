@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>电话银行实时交易量</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        #charts .item {
+            list-style: none;
+            width: 33.3%;
+            height: 100%;
+            float: left;
+        }
+
+        #charts .item li {
+            width: 100%;
+            height: 50%;
+
+        }
+        #charts .item .tips {
+            padding: 10%;
+            box-sizing: border-box;
+        }
+        #charts .item .tip {
+            border: 1px solid #006BDD;
+            text-align: center;
+            height: 100%;
+            color: #fff;
+        }
+
+        #charts .item .tip .group {
+            box-sizing: border-box;
+            padding-top: 5%;
+            height: 50%;
+        }
+        #charts .item .tip .group:last-child {
+            padding-top: 0;
+        }
+        #charts .item .tip .group span {
+            display: block;
+        }
+        #charts .item .tip .group .num {
+            font-size: 30px;
+        }
+
+        #charts .item .tip .group .num1 {
+            color: #F7AB4B;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">电话银行实时交易量</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <ul class="item">
+                <li class="chart"></li>
+                <li class="tips">
+                    <div class='tip'>
+                        <p class="group">
+                            <span class="num1 num">6999</span>
+                            <span>人工呼入量</span>
+                        </p>
+                        <p class="group">
+                            <span class="num2 num">88990</span>
+                            <span>呼入量</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="chart"></li>
+                <li class="tips">
+                    <div class='tip'>
+                        <p class="group">
+                            <span class="num1 num">6999</span>
+                            <span>接通量</span>
+                        </p>
+                        <p class="group">
+                            <span class="num2 num">88990</span>
+                            <span>呼损量</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <ul class="item">
+                <li class="chart"></li>
+                <li class="tips">
+                    <div class='tip'>
+                        <p class="group">
+                            <span class="num1 num">6999</span>
+                            <span>服务水平</span>
+                        </p>
+                        <p class="group">
+                            <span class="num2 num">88990</span>
+                            <span>排队量</span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+
+
+<script>
+
+    var myChart;
+    var num = 80;
+    var labelTop = {
+        normal : {
+            color:'rgba(0,73,160,0.7)',
+            labelLine : {
+                show : false
+            }
+        }
+    };
+    var labelFromatter = {
+        normal:{
+            formatter : function (params){
+                return params.percent + '%';
+            },
+            textStyle: {
+                color:'#fff',
+                fontSize:'25',
+                fontFamily:'microsoft yahei'
+            }
+        }
+    }
+    var radius = ['60%', '68%'];
+    option = {
+        animation:false,
+        series : [
+            {
+                type : 'pie',
+                radius : radius,
+                center:['50%','50%'],
+                label : labelFromatter,
+                itemStyle:{
+                    normal:{
+                        color:''
+                    }
+                },
+                data : [
+                    {name:'other', value:num, itemStyle : {
+                        normal : {
+                            labelLine : {
+                                show : false
+                            }
+                        }
+                    }, label : {
+                            normal:{
+                                show : true,
+                                position : 'center'
+                            }
+                        }
+                    },
+                    {name:'M3模块',value:num,itemStyle : labelTop,label : {
+                        normal:{
+                            show : false
+                        }
+                    },}
+                ]
+            }
+        ]
+    };
+
+var arrChart = [];
+var color = ['#01FFC6','#E95C6C','#0192FF'];
+$('.chart').each(function (index,el) {
+    $(this).siblings().find('.num1').css('color',color[index]).text(6890)
+    myChart = echarts.init(el);
+    option.series[0].itemStyle.normal.color = color[index];
+    myChart.setOption(option);
+    arrChart.push(myChart);
+})
+setInterval(function () {
+    var arr = [];
+    var arr1 = [];
+    for(var i=0;i<3;i++) {
+        arr.push(RandomNumBoth(11200,20201));
+        arr1.push(RandomNumBoth(6800,7000));
+    }
+    for(var j=0;j<3;j++) {
+//        var num1 = ((arr[j]/(arr1[j] + arr[j]))*100).toFixed(1);
+        option.series[0].itemStyle.normal.color = color[j];
+        option.series[0].data[0].value = arr[j];
+        option.series[0].data[1].value = arr1[j];
+        arrChart[j].setOption(option, true);
+    }
+
+    $('.tip').each(function (index) {
+            $(this).find('.num1').css('color',color[index]).text(arr[index].toFixed(0))
+            $(this).find('.num2').text(arr1[index].toFixed(0))
+    })
+
+},2000);
+
+//提取随机数
+function RandomNumBoth(Min,Max){
+    var Range = Max - Min;
+    var Rand = Math.random().toFixed(2)-0;
+    var num = Min + Rand * Range; //四舍五入
+    return num;
+}
+</script>
+</body>
+</html>

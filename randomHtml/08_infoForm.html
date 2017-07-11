@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>交易成功率</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        .infoForm #charts {
+           height: 400px;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">TOP-开户行</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <span class="footerLine"></span>
+    </div>
+</div>
+
+
+<script>
+    var data1 = {
+        '北京':23000,
+        '广东':20181,
+        '河南':18000,
+        '山东':15700,
+        '四川':12800,
+        '江苏':10900,
+        '湖北':8400,
+        '湖南':6200,
+        '浙江':4800,
+        '山西':3253
+    }
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+    var grid = {
+        left:'0%',
+        right:'10%',
+        bottom:'0%',
+        top:20,
+        containLabel:true
+    };
+    var pathSymbols = {
+        line:'path://M0,0 L0,10 H20,10'
+    };
+
+    //数值排序处理函数
+    function dataSort(data) {
+        data.sort(function (a, b) {
+            if (a.value < b.value) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+    }
+
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'none'
+            },
+            formatter: function (params) {
+                return params[0].name + ': ' + params[0].value;
+            }
+        },
+        grid:grid,
+        xAxis: {
+            data: [],
+            axisTick: {show: false},
+            axisLine: {show: false},
+            axisLabel: {show: false}
+
+        },
+        yAxis: {
+            max:25000,
+            splitLine: {show: false},
+            axisTick:{
+                inside:true,
+                length: '8',
+                lineStyle: {
+                    color:'#2B557A',
+                    width:'1'
+                }
+            },
+            axisLabel:{
+                interval:0,
+                formatter:'{value}',
+                textStyle:{
+                    color:'#2B557A',
+                    fontSize:"12",
+                    width:'1'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color:'#2B557A',
+                    width:'2'
+                }
+            }
+        },
+        series: [{
+            name: 'hill',
+            type: 'pictorialBar',
+            barCategoryGap: '40%',
+            symbol: 'path://M0,10 L1,0 L2,10 z',
+            itemStyle: {
+                normal: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [{
+                            offset: 0, color: '#B00043' // 0% 处的颜色
+                        }, {
+                            offset: 1, color: '#470534' // 100% 处的颜色
+                        }],
+                        globalCoord: false // 缺省为 false
+                    }
+                },
+                emphasis: {
+                    opacity: 1
+                }
+            },
+            data:[],
+            z: 10
+        }, {
+            name: 'glyph',
+            type: 'pictorialBar',
+            symbol: 'image://image/row.png',
+            symbolSize: [10, 28],
+            symbolPosition: 'end',
+            symbolOffset: [0, '-100%'],
+            z: 10,
+            data:[]
+            },{
+            name: 'line',
+            type: 'pictorialBar',
+            symbol: pathSymbols.line,
+            symbolSize: [0, 50],
+            symbolPosition: 'end',
+            symbolOffset: [0, '-100%'],
+            z: 8,
+            label: {
+                normal: {
+                    show: true,
+                    formatter :function (params) {
+                        return params.name+parseInt(params.value).toLocaleString()
+                    },
+                    position: ['0%','0%'],
+                    textStyle:{
+                        color:'#0087EF',
+                        fontSize:'10'
+                    }
+                }
+            },
+            data:[]
+        },
+        ]
+    };
+    option.series[0].data = Object.keys(data1).map(function (key) {
+        return {
+            name: key,
+            value: data1[key],
+        }
+    });
+    option.series[1].data = Object.keys(data1).map(function (key) {
+        return {
+            name: key,
+            value: data1[key],
+        }
+    });
+    option.series[2].data = Object.keys(data1).map(function (key) {
+        return {
+            name: key,
+            value: data1[key],
+        }
+    });
+    myChart.setOption(option, true);
+
+    setInterval(function () {
+
+        data1['北京'] = RandomNumBoth(100,20000);
+        var getData = Object.keys(data1).map(function (key) {
+            return {
+                name: key,
+                value: data1[key],
+            }
+        });
+        dataSort(getData);
+        option.series[0].data = getData;
+        option.series[1].data = getData;
+        option.series[2].data = getData;
+        myChart.setOption(option);// 重新加载图表
+
+    },5000);
+
+    //提取随机数
+    function RandomNumBoth(Min,Max){
+        var Range = Max - Min;
+        var Rand = Math.random();
+        var num = (Min + Rand * Range).toFixed(0); //四舍五入
+        return num;
+    }
+</script>
+</body>
+</html>

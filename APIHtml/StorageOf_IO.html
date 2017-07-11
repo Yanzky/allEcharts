@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>存储的I/O读写速率排行</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 62.5%;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-size: 1.2rem;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .title {
+            font-size: 4rem;
+            color: #91eaff;
+            height: 10%;
+        }
+
+        .title span {
+            font-size: 2.6rem;
+            color: #00e89b;
+        }
+    </style>
+    <script src="../js/echarts.js"></script>
+</head>
+
+<body>
+    <div class="title">
+        存储的I/O读写速率排行/<span>TOP10</span>
+    </div>
+    <div id="main" style="width:100%;height:90%;"></div>
+</body>
+<script>
+    function initEchart() {
+        var option = {
+            grid: {
+               top: '5%',
+                right: '2%',
+                bottom: '7%',
+                left: '7%'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                    type: 'line'
+                },
+                formatter: function (params) {
+                    return params[0].name + '<br/>' +
+                        params[0].seriesName + ' : ' + params[0].value + '<br/>' +
+                        params[1].seriesName + ' : ' + (params[1].value + params[0].value);
+                }
+            },
+            legend: {
+                selectedMode: false,
+                data: ['Acutal', 'Forecast', ]
+            },
+            calculable: true,
+            xAxis: [{
+                type: 'category',
+                data: ['新城', '龙岗', '同乐', '盛平', '龙新', '秤地', '新生', '爱联', '大运', '横岗'],
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize:20
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                }
+
+            }],
+            yAxis: [{
+                type: 'value',
+                boundaryGap: [0, 0.1],
+                axisLabel: {
+                    interval: 0,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize:20
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff'
+                    }
+                }
+
+            }],
+            series: [{
+                    name: 'Acutal',
+                    type: 'bar',
+                    stack: 'sum',
+                    barCategoryGap: '50%',
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: 'rgba(5,119,255,0.8)'},
+                                            {offset: 0.5, color: 'rgba(5,119,255,0.5)'},
+                                            {offset: 0.9, color: 'rgba(5,119,255,0.2)'}
+                                        ]
+                                ),
+                            label: {
+                                show: true,
+                                position: 'insideTop'
+                            }
+                        }
+                    },
+                    data: [260, 200, 220, 120, 100, 80, 60, 80, 30, 40]
+                },
+                {
+                    name: 'Forecast',
+                    type: 'bar',
+                    stack: 'sum',
+                    itemStyle: {
+                        normal: {
+                            color: '#99efbf',
+                            label: {
+                                show: true,
+                                position: 'insideTop',
+                                formatter: function (params) {
+                                    for (var i = 0, l = option.xAxis[0].data.length; i < l; i++) {
+                                        if (option.xAxis[0].data[i] == params.name) {
+                                            return option.series[0].data[i] + params.value;
+                                        }
+                                    }
+                                },
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    },
+                    data: [40, 80, 50, 80, 80, 70, 40, 50, 60, 70]
+                }
+            ]
+        };
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.setOption(option);
+    }
+    initEchart();
+</script>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>工单统计</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/echarts.js"></script>
+    <script src='./chartsjs/bar.js'></script>
+</head>
+
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">工单统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+</body>
+<script>
+    var json = {
+        data: {
+            '事件单':1700,
+            '问题单':2200,
+            '变更单':2400,
+            '服务单':2800
+        }
+    }
+    var myChart = document.getElementById('charts');
+    function initEchart(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        chartLine(myChart,json)
+    }
+    initEchart(json);
+</script>
+
+</html>

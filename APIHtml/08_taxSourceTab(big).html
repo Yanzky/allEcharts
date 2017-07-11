@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1">
+    <title>新资产统计 </title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+
+    <style>
+        .thead table,.tbody table{
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            border-spacing: 0;
+            border-collapse: collapse;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+        .tbody {
+            box-sizing: border-box;
+            /*border-bottom: 1px solid #0471B6;*/
+            overflow: hidden;
+        }
+        #infoTable tr,td,th {
+            height: 30px;
+            color: #fff;
+            padding: 0 4px;
+            font-size: 12px;
+            box-sizing: border-box;
+            word-wrap:break-word;
+            word-break:break-all;
+        }
+        .thead table td {
+            height: 40px;
+            font-size: 16px;
+        }
+        #charts {
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">新资产统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts">
+            <!--头部表格标题 start -->
+            <div class="thead">
+                <table></table>
+            </div>
+            <!--头部表格标题 end -->
+
+            <!--表格体标题 start -->
+            <div class="tbody">
+                <table>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+
+<script>
+
+    var checkedObj = {
+        title:['资产类型','资产名称','新增日期','资产属于业务','资产所属部门'],
+        data: [
+            {"type":'PC服务器',"name":'IBM 3850',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'路由器',"name":'H3C S5700',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'磁盘整列',"name":'HUAWEI DAE',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'PC服务器',"name":'IBM 3850',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'路由器',"name":'H3C S5700',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'磁盘整列',"name":'HUAWEI DAE',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'PC服务器',"name":'IBM 3850',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'路由器',"name":'H3C S5700',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'磁盘整列',"name":'HUAWEI DAE',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'},
+            {"type":'路由器',"name":'H3C S5700',"time":'2017/3/8',"business":'水利项目专业收入',"items":'地方水利建设基金'}
+        ]
+    };
+
+    //定义保存所有元素的数组
+    var listArr = [];
+    //数组的添加和删除元素的方法扩展
+    var push = Array.prototype.push;
+
+    var scrollTimer = 1000;
+    var tableWidth = $('table').width();
+    var tdWidth = 0;
+    var liHeight = 0;
+    function initHtml(checkedObj) {
+        var tableTitle = checkedObj.title;
+        var tableContent = checkedObj.data;
+        var tdLenght = tableTitle.length;
+        tdWidth = tableWidth / tdLenght;
+
+        //将数据追加到listArr
+        push.apply(listArr, tableContent);
+        //生成表头
+        $('.thead table').html(getTheadHtml(tableTitle));
+        //生成内容
+        $('.tbody table').html(getTbodyHtml(tableContent));
+        //平均分配列的宽度
+        $('table td').css('width',tdWidth + 'px');
+    }
+    initHtml(checkedObj);
+    //头部表格拼接处理函数
+    function getTheadHtml(tableTitle) {
+        var htmlThead = '<tr>';
+        for(var i = 0 ;i < tableTitle.length;i++) {
+            htmlThead +='<td>'+tableTitle[i]+'</td>';
+        }
+        htmlThead +='</tr>';
+
+        return htmlThead;
+    }
+    //内容表格拼接
+    function getTbodyHtml(tableContent) {
+        $('table td').css('width',tdWidth + 'px');
+        var contentLength = tableContent.length;
+
+        var htmlTbody = "";
+        for(var j=0;j<contentLength;j++) {
+
+            htmlTbody +='<tr>';
+            for(var item in tableContent[j]) {
+                htmlTbody +='<td>'+tableContent[j][item]+'</td>';
+            }
+            htmlTbody +='</tr>';
+        }
+        return htmlTbody;
+    }
+
+
+</script>
+
+</body>
+</html>

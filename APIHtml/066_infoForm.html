@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>交易成功率</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <script src="./chartsjs/pie.js"></script>
+    <style>
+        .tip {
+            position: absolute;
+            bottom: 42px;
+            left: 0px;
+            list-style: none;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .tip li {
+            width: 79px;
+        }
+        .tip li i {
+            font-style: normal;
+            display: block;
+            font-size: 12px;
+            /*color: #fff;*/
+        }
+        .tip li i:last-child {
+            margin-top: 10px;
+            width: 79px;
+            height: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">资产统计</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+    </div>
+</div>
+
+
+<script>
+    var json = {
+        data: {
+            '服务器设备':1258,
+            '存储设备':'1126',
+            '安全设备':'1510',
+            '网络设备':'1680',
+            '机房动环设备':'1580',
+            '传输设备':'1780',
+        }
+    }
+    var pros = {radius:['30%','50%']}
+    var chart = document.getElementById('charts');
+
+    function initHtml(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        Pie(chart,json,pros)
+    }
+    initHtml(json)
+</script>
+</body>
+</html>

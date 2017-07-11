@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>当前交易量</title>
+    <link rel="stylesheet" href="./css/common.css">
+    <script src="./js/jquery-1.7.1.min.js"></script>
+    <script src="./js/echarts.min.js"></script>
+    <style>
+        .tips {
+            margin-top: 18px;
+            display: flex;
+            justify-content:space-around;
+        }
+        .tips span{
+            height: 34px;
+            line-height: 34px;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+        }
+        .tips span:first-child {
+            width: 151px;
+            background-color: rgba(27,36,46,0.8);
+            color: #5F7787;
+        }
+        .tips span:last-child {
+            width: 169px;
+            background-color: rgba(176,130,47,0.6);
+            color: #FFBC42;
+        }
+        .tip {
+            position: absolute;
+            bottom: 15px;
+            right: 33px;
+            height: 220px;
+        }
+        .tip .line {
+            display: block;
+            position: relative;
+            height: 100%;
+            width: 29px;
+            background: url("../image/line.png") 0px 0px no-repeat;
+            color: #FFFFFF;
+            -webkit-background-size:100% 100%;
+            background-size:100% 100%;
+
+        }
+        .tip .line i {
+            display: block;
+            font-size: 10px;
+            height: 19px;
+            line-height: 19px;
+            text-align: center;
+            background-color: rgba(117,236,251,0.5);
+        }
+        .tip .line .time {
+            position: absolute;
+            top: -30px;
+            left: -50px;
+            width: 69px;
+
+        }
+        .tip .line .value {
+            position: absolute;
+            bottom: 5px;
+            right: 0px;
+            width: 55px;
+        }
+
+        .tip .circle {
+            display: block;
+            z-index: 100;
+            position: absolute;
+            top: 40%;
+            left: 40%;
+            width: 10px;
+            height: 10px;
+            background-color: #75ECFB;
+            border-radius: 5px;
+        }
+        .circle::before, .circle::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #75ECFB;
+            border-radius: 5px;
+        }
+
+        .circle::before {
+            animation: scaleout 1.5s infinite linear;
+        }
+
+        .circle::after {
+            animation: scaleout 1.5s 0.5s infinite linear;
+        }
+        @keyframes scaleout {
+            0% {
+                transform: scale(1);
+            } 100% {
+                  transform: scale(2.6);
+                  opacity: 0.3;
+              }
+        }
+        .infoForm .chart {
+            height: 70%;
+            width: 100%;
+            position: relative;
+
+        }
+        .infoForm #charts {
+            height: 310px;
+        }
+    </style>
+</head>
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">当前交易量</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div class='tips'>
+            <span>当前交易量 <i>5678</i> 笔</span>
+            <span>历史峰值 <i>6638</i> 笔</span>
+        </div>
+        <div class='chart'>
+            <div id="charts"></div>
+            <div class="tip">
+            <span class='line'>
+                <i class='time'>12:06:45</i>
+                <i class='value'>3456</i>
+            </span>
+                <span class='circle'></span>
+            </div>
+        </div>
+        <span class="footerLine"></span>
+    </div>
+</div>
+
+
+<script>
+    var chart = document.getElementById('charts');
+    var myChart = echarts.init(chart);
+    var grid = {
+        left:'0%',
+        right:'50',
+        bottom:'2%',
+        top:'5%',
+        containLabel:true
+    };
+
+    var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#283b56'
+                }
+            }
+        },
+        grid:grid,
+        xAxis: {
+            type: 'category',
+            boundaryGap: true,
+            data: (function (){
+                var now = new Date();
+                var res = [];
+                var len = 100;
+                while (len--) {
+                    res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                    now = new Date(now - 2000);
+                }
+                return res;
+            })(),
+            splitLine: {
+                show: false
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#173E62',
+                    width:'1'
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: '#163D62',
+                    fontSize:'12',
+                    fontFamily: 'Microsoft yahei'
+                }
+            },
+            boundaryGap:true
+        },
+        yAxis: {
+            type: 'value',
+            max:1800,
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                lineStyle: {
+                    color:'#1B242D',
+                    width: 1
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#163D62',
+                    width:'1'
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: '#163D62',
+                    fontSize:'12'
+                }
+            }
+        },
+        series: [{
+            type: 'line',
+            showSymbol: true,
+            showAllSymbol:true,
+            hoverAnimation: true,
+            data:(function (){
+                var res = [];
+                var len = 100;
+                while (len--) {
+                    res.push(100+Math.round(Math.random() * 1500));
+                }
+                return res;
+            })(),
+            symbol: "circle",
+            symbolSize:"2",
+            lineStyle: {
+                normal: {
+                    color: '#28343F',
+                    width:'1'
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color:'#F6B640'
+                }
+            }
+        }]
+    };
+    myChart.setOption(option);
+    setInterval(function () {
+
+        axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+
+        var data0 = option.series[0].data;
+        data0.shift();
+        var value = Math.round(100+Math.random() * 1500);
+        data0.push(value);
+        $('.value').text(value)
+        $('.time').text(axisData)
+
+        option.xAxis.data.shift();
+        option.xAxis.data.push(axisData);
+
+        myChart.setOption(option);
+    }, 5000);
+</script>
+</body>
+</html>

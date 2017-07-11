@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CPU报表</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/echarts.js"></script>
+    <script src="./chartsjs/line.js"></script>
+</head>
+
+<body>
+<div class="projectBox">
+    <div class="infoForm">
+        <!--头部导航 start-->
+        <div class="nav">
+            <span class="h-Title">网络资源负载统计（带宽利用率）</span>
+        </div>
+        <!--头部导航 end-->
+        <!--图标部分 start-->
+        <div id="charts"></div>
+        <!--图标部分 end-->
+        <i class="left-top"></i>
+        <i class="left-bottom"></i>
+        <i class="right-top"></i>
+        <i class="right-bottom"></i>
+    </div>
+</div>
+</body>
+<script>
+    var json = {
+        data: {
+            xAxis: ['新城所','老城所','崇文所','望京所'],
+            showData: {
+                '视频专网流入':[10,20,11,20],
+                '视频专网流出':[15,26,37,18],
+                '公安网流入':[16,70,40,30],
+                '公安网流出':[19,60,40,20],
+            }
+        }
+    }
+    var myChart = document.getElementById('charts');
+    function initHtml(obj) {
+        if(obj == null && obj == undefined) {
+            //alert('数据不能为空');
+            return false;
+        }
+        var json = null;
+        if(typeof obj == "string") {
+            json = JSON.parse(obj).data;
+        } else {
+            json = obj.data;
+        }
+        Line(myChart,json)
+    }
+    initHtml(json);
+
+</script>
+
+</html>
